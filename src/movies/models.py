@@ -6,14 +6,6 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 
-class UpdatedCreatedMixin(models.Model):
-    class Meta:
-        abstract = True
-
-    created_at = models.DateTimeField('дата создания', auto_created=True, auto_now_add=True)
-    updated_at = models.DateTimeField('дата обновления', auto_now=True)
-
-
 class UserProfile(models.Model):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
@@ -22,10 +14,14 @@ class UserProfile(models.Model):
     birth_date = models.DateTimeField()
 
 
-class Genre(UpdatedCreatedMixin):
+class Genre(models.Model):
     id = models.UUIDField('ID', primary_key=True, default=uuid.uuid4(), editable=False)
     name = models.CharField(_('название'), max_length=255)
-    description = models.TextField(_('описание'), blank=True)
+    description = models.TextField(_('описание'), null=True, blank=True)
+
+    created_at = models.DateTimeField('дата создания', auto_created=True, auto_now_add=True,
+                                      null=True, blank=True)
+    updated_at = models.DateTimeField('дата обновления', auto_now=True, null=True, blank=True)
 
     class Meta:
         verbose_name = _('жанр')
@@ -37,10 +33,14 @@ class Genre(UpdatedCreatedMixin):
         return self.name
 
 
-class Person(UpdatedCreatedMixin):
+class Person(models.Model):
     id = models.UUIDField('ID', primary_key=True, default=uuid.uuid4(), editable=False)
     full_name = models.CharField(_('полное имя'), max_length=255)
     birth_date = models.DateField(_('день рождения'), null=True, blank=True)
+
+    created_at = models.DateTimeField('дата создания', auto_created=True, auto_now_add=True,
+                                      null=True, blank=True)
+    updated_at = models.DateTimeField('дата обновления', auto_now=True, null=True, blank=True)
 
     class Meta:
         verbose_name = 'личность'
@@ -57,7 +57,7 @@ class FilmWorkType(models.TextChoices):
     TV_SHOW = 'tv_show', _('шоу')
 
 
-class FilmWork(UpdatedCreatedMixin):
+class FilmWork(models.Model):
     id = models.UUIDField('ID', primary_key=True, default=uuid.uuid4(), editable=False)
     title = models.TextField(_('название'))
     description = models.TextField(_('описание'), blank=True, null=False)
@@ -68,6 +68,10 @@ class FilmWork(UpdatedCreatedMixin):
     type = models.CharField(_('тип'), max_length=20, choices=FilmWorkType.choices)
     genres = models.ManyToManyField(Genre, through='movies.GenreFilmWork')
     persons = models.ManyToManyField(Person, through='movies.PersonFilmWork')
+
+    created_at = models.DateTimeField('дата создания', auto_created=True, auto_now_add=True,
+                                      null=True, blank=True)
+    updated_at = models.DateTimeField('дата обновления', auto_now=True, null=True, blank=True)
 
     class Meta:
         verbose_name = _('кинопроизведение')
