@@ -36,7 +36,6 @@ class FilmWorkAdmin(admin.ModelAdmin):
 
 @admin.register(Genre)
 class GenreAdmin(admin.ModelAdmin):
-    readonly_fields = ('created_at', 'updated_at',)
     fields = (
         'name', 'description'
     )
@@ -46,8 +45,6 @@ class GenreAdmin(admin.ModelAdmin):
 @admin.register(Person)
 class PersonAdmin(admin.ModelAdmin):
     search_fields = ('id', 'full_name')
-    readonly_fields = ('created_at', 'updated_at',)
-
     inlines = [
         PersonRoleInline
     ]
