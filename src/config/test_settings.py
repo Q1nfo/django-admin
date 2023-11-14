@@ -109,5 +109,3 @@ class Settings(TestCase):
         ).delete()
 
 
-
-
